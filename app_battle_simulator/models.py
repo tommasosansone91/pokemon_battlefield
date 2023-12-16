@@ -25,7 +25,34 @@ class pokemon(models.Model):
         ordering = ['id']
 
 
-class battle_stats(models.Model):
+class stats_set(models.Model):
+
+    # nota che il nome dell'attributo è maiuscolo
+    # il nome del modello è minuscolo
+    Pokemon = models.OneToOneField(
+        'pokemon',
+        on_delete=models.CASCADE,        
+    )
+
+    HP = models.IntegerField(blank=False, null=False)
+
+    ATK = models.IntegerField(blank=False, null=False)
+    DEF = models.IntegerField(blank=False, null=False)
+    SPD = models.IntegerField(blank=False, null=False)
+
+    # SPCATK = models.IntegerField(blank=False, null=False)
+    # SPCDEF = models.IntegerField(blank=False, null=False)
+
+    # PRECISION = models.IntegerField(blank=False, null=False)
+
+    def __str__(self):       
+        return self.id, self.Pokemon
+
+    class Meta:
+        ordering = ['id']
+
+
+class battle_stats_set(models.Model):
 
     # nota che il nome dell'attributo è maiuscolo
     # il nome del modello è minuscolo

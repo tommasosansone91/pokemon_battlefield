@@ -19,6 +19,10 @@ import requests
 
 import random
 
+from app_battle_simulator.models import pokemon
+from app_battle_simulator.models import moveset, battle_stats_set
+from app_battle_simulator.models import move
+
 
 # declare functions
 #######################
@@ -61,7 +65,13 @@ class Command(BaseCommand):
             # get the pokemon main properties
             #----------------------------------
 
+            # clear the data
+            pokemon.objects.all().delete()
 
+            # non tocco il modello history
+
+            # prende dati input
+            input_data = target_area_input_data.objects.all()            
 
 
             # get the pokemon stats
