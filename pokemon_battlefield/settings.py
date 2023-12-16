@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework', # already in django, just activate
+    'drf_spectacular',
+    'app_battle_simulator',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +125,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', 
+    # it configures DRF to use the drf spectacular to autogenrate the schema
+}
