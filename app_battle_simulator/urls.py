@@ -6,7 +6,7 @@ urlpatterns = [
 
     # # path, vista, nome di richiamo
 
-    # path('', views.home, name="home"),
+    path('', views.home, name="home"),
 
     # path('catalogo_api', views.catalogo_api, name="catalogo_api"),
     # path('catalogo_localita', views.catalogo_localita, name="catalogo_localita"),
