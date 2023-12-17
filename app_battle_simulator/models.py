@@ -90,7 +90,7 @@ class move(models.Model):
 
     Name = models.CharField(max_length=256, blank=False, null=False)
 
-    Description = models.CharField(max_length=256, blank=False, null=False)
+    Description = models.TextField(max_length=256, blank=False, null=False)
 
     Power = models.PositiveIntegerField(blank=False, null=False)
 
