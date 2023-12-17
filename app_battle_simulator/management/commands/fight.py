@@ -256,6 +256,12 @@ class Command(BaseCommand):
                 fighter['moves_list'] = move.objects.all().filter(Moveset=fighter['moveset'].id) # list
                 defender['moves_list'] = move.objects.all().filter(Moveset=defender['moveset'].id) # list
 
+                fighter['stats_set'] = stats_set.objects.get(Pokemon=self.fighter_id)
+                defender['stats_set'] = stats_set.objects.get(Pokemon=self.defender_id)                
+
+                fighter['battle_stats_set'] = battle_stats_set.objects.get(Pokemon=self.fighter_id)
+                defender['battle_stats_set'] = battle_stats_set.objects.get(Pokemon=self.defender_id)  
+
         # opponents: list of dicts
         # opponent['<model_name>'].object_attribute
 
@@ -266,17 +272,31 @@ class Command(BaseCommand):
 
         for opponent in battle.opponents:
             self.stdout.write("******************************") 
-            self.stdout.write("")           
+
+            self.stdout.write("")          
+
             self.stdout.write("Name: {}".format(opponent['pokemon'].Name))
             self.stdout.write("Pokèdex id:{}".format(opponent['pokemon'].Pokedex_id))
             self.stdout.write("Picture: {}".format(opponent['pokemon'].front_sprite_url))
             self.stdout.write("opponent id: {}".format(opponent['pokemon'].id))
+
             self.stdout.write("")
+
             self.stdout.write("\tMoveset:")
             self.stdout.write("\t-----------------")
 
             for opponent_move in opponent['moves_list']:
-                self.stdout.write("\t- {}\tPower: {}".format(opponent_move.Name, opponent_move.Power))
+                self.stdout.write("\t- {}\n\t\tPower: {}".format(opponent_move.Name, opponent_move.Power))
+
+            self.stdout.write("")
+
+            self.stdout.write("\tStats:")
+            self.stdout.write("\t-----------------")
+
+            self.stdout.write("\t- HP:\t{}".format(opponent['stats_set'].HP))
+            self.stdout.write("\t- ATK:\t{}".format(opponent['stats_set'].ATK))
+            self.stdout.write("\t- DEF:\t{}".format(opponent['stats_set'].DEF))
+            self.stdout.write("\t- SPD:\t{}".format(opponent['stats_set'].SPD))
 
             self.stdout.write("")
               
