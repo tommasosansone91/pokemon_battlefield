@@ -12,14 +12,14 @@ class pokemon(models.Model):
     # id = models.AutoField(primary_key=True)
 
     Name = models.CharField(max_length=256, blank=False, null=False)
+    Pokedex_id = models.PositiveIntegerField(blank=False, null=False)
 
-    Pokedex_entry = models.CharField(max_length=256, blank=False, null=False)
-
-    Pokedex_id = models.IntegerField(blank=False, null=False)
+    front_sprite_url = models.URLField(max_length=256, blank=False, null=False)
+    back_sprite_url = models.URLField(max_length=256, blank=False, null=False)
 
 
     def __str__(self):       
-        return  self.id, self.Name, self.Pokedex_id
+        return  "[{}] N°{} - {}".format(self.id, self.Pokedex_id, self.Name) 
 
     class Meta:
         ordering = ['id']
@@ -34,19 +34,19 @@ class stats_set(models.Model):
         on_delete=models.CASCADE,        
     )
 
-    HP = models.IntegerField(blank=False, null=False)
+    HP = models.PositiveIntegerField(blank=False, null=False)
 
-    ATK = models.IntegerField(blank=False, null=False)
-    DEF = models.IntegerField(blank=False, null=False)
-    SPD = models.IntegerField(blank=False, null=False)
+    ATK = models.PositiveIntegerField(blank=False, null=False)
+    DEF = models.PositiveIntegerField(blank=False, null=False)
+    SPD = models.PositiveIntegerField(blank=False, null=False)
 
-    # SPCATK = models.IntegerField(blank=False, null=False)
-    # SPCDEF = models.IntegerField(blank=False, null=False)
+    # SPCATK = models.PositivePositiveIntegerField(blank=False, null=False)
+    # SPCDEF = models.PositivePositiveIntegerField(blank=False, null=False)
 
-    # PRECISION = models.IntegerField(blank=False, null=False)
+    # PRECISION = models.PositiveIntegerField(blank=False, null=False)
 
     def __str__(self):       
-        return self.id, self.Pokemon
+            return  "[{}] (pokemon: {})".format(self.id, self.Pokemon)   
 
     class Meta:
         ordering = ['id']
@@ -61,19 +61,19 @@ class battle_stats_set(models.Model):
         on_delete=models.CASCADE,        
     )
 
-    HP = models.IntegerField(blank=False, null=False)
+    HP = models.PositiveIntegerField(blank=False, null=False)
 
-    ATK = models.IntegerField(blank=False, null=False)
-    DEF = models.IntegerField(blank=False, null=False)
-    SPD = models.IntegerField(blank=False, null=False)
+    ATK = models.PositiveIntegerField(blank=False, null=False)
+    DEF = models.PositiveIntegerField(blank=False, null=False)
+    SPD = models.PositiveIntegerField(blank=False, null=False)
 
-    # SPCATK = models.IntegerField(blank=False, null=False)
-    # SPCDEF = models.IntegerField(blank=False, null=False)
+    # SPCATK = models.PositiveIntegerField(blank=False, null=False)
+    # SPCDEF = models.PositiveIntegerField(blank=False, null=False)
 
-    # PRECISION = models.IntegerField(blank=False, null=False)
+    # PRECISION = models.PositiveIntegerField(blank=False, null=False)
 
     def __str__(self):       
-        return self.id, self.Pokemon
+        return  "[{}] (pokemon: {})".format(self.id, self.Pokemon) 
 
     class Meta:
         ordering = ['id']
@@ -92,15 +92,15 @@ class move(models.Model):
 
     Description = models.CharField(max_length=256, blank=False, null=False)
 
-    Damage = models.IntegerField(blank=False, null=False)
+    Damage = models.PositiveIntegerField(blank=False, null=False)
 
-    # Accuracy = models.IntegerField(blank=False, null=False)
+    # Accuracy = models.PositiveIntegerField(blank=False, null=False)
 
     # Type = models.CharField(max_length=256, blank=False, null=False)
 
 
     def __str__(self):       
-        return  self.Name, self.Moveset 
+        return  "{} (Moveset: {})".format(self.Name, self.Moveset)  
 
     class Meta:
         ordering = ['Moveset', 'Name']
@@ -117,7 +117,7 @@ class moveset(models.Model):
 
 
     def __str__(self):       
-        return  self.id, self.Pokemon  
+        return  "[{}] (pokemon: {})".format(self.id, self.Pokemon) 
 
     class Meta:
         ordering = ['id']

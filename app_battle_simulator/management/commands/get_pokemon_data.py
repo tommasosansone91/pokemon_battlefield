@@ -5,7 +5,7 @@
 # class Command(BaseCommand):
 #     def handle(self, *args, **options):
 
-# python manage.py fight
+# python manage.py get_pokemon_data
 
 
 # import modules
@@ -62,6 +62,8 @@ class Command(BaseCommand):
             pokemon_1_api_data = json.loads(pokemon_1_api_request.content)
             pokemon_2_api_data = json.loads(pokemon_2_api_request.content)
 
+            # print('\n\n', pokemon_1_api_data,'\n\n', pokemon_2_api_data)
+
 
         except:
         # except Exception as e:
@@ -72,107 +74,42 @@ class Command(BaseCommand):
                     pokemon_identifier_input_1, pokemon_identifier_input_2))
             sys.exit(1)
 
-        
-        # print('\n\n', pokemon_1_api_data,'\n\n', pokemon_2_api_data)
-
         pokemon_data_list = [ pokemon_1_api_data , pokemon_2_api_data ]
 
+        
+        for pokemon_data in pokemon_data_list:  
+            print("")
 
-        # clear the models
-        pokemon.objects.all().delete()
-        battle_stats_set.objects.all().delete()
-        stats_set.objects.all().delete()
-        # moveset.objects.all().delete()
-        # move.objects.all().delete()
-
-        # get the pokemon main properties
-        #---------------------------------  
-
-        for pokemon_data in pokemon_data_list:        
-
-            new_pokemon = pokemon(
-
-                Name = pokemon_data['name'],
-                Pokedex_id = pokemon_data['id'],
-
-                front_sprite_url = pokemon_data['sprites']['front_default'],
-                back_sprite_url = pokemon_data['sprites']['back_default']
-
-            )
+            # print(pokemon_data['sprites']['front_default'])
+            # print(pokemon_data['sprites']['back_default'])
+            print(pokemon_data['name'])
             
-            new_pokemon.save()
 
-            # get the pokemon stats
-            #--------------------------------- 
-            
+            # for stat in pokemon_data['stats']:
+            #     print(stat['stat']['name'])
+            #     print(stat['base_stat'])
+
             # stats_list = [
             #     {
             #         'stat_name': stat['stat']['name'],
             #         'stat_value': stat['base_stat']
             #     }
             #     for stat in pokemon_data['stats']
-            # ]      
+            # ]
 
             stats_dict = dict()
             for stat in pokemon_data['stats']:
                 stats_dict[stat['stat']['name']] = stat['base_stat']
 
-
-            new_stats_set = stats_set(
-
-                Pokemon = pokemon.objects.get(id=new_pokemon.id),
-
-                HP = stats_dict['hp'],
-                ATK = stats_dict['attack'],
-                DEF = stats_dict['defense'],
-                SPD = stats_dict['speed']
-
-            )
+            # print(stats_list)
+            print(stats_dict)
+            stats_dict
+                
             
-            new_stats_set.save()
-
-
-            new_battle_stats_set = battle_stats_set(
-
-                Pokemon = pokemon.objects.get(id=new_pokemon.id),
-
-                HP = stats_dict['hp'],
-                ATK = stats_dict['attack'],
-                DEF = stats_dict['defense'],
-                SPD = stats_dict['speed']
-
-            )
-            
-            new_battle_stats_set.save()
 
 
 
-        # get the pokemon stats
-        #-----------------------
-
-        # new_record = target_area_realtime_data(
-        #                                         Target_area_name=target_area_input_data.objects.get(Name=place_name),
-        #                                         Last_update_time=record_time,
-
-        #                                         PM10_mean=PM10_mean,
-        #                                         PM25_mean=PM25_mean,
-
-        #                                         PM10_quality=PM10_quality, 
-        #                                         PM25_quality=PM25_quality,
-
-        #                                         PM10_cathegory=PM10_cathegory,
-        #                                         PM25_cathegory=PM25_cathegory,
-
-        #                                         n_selected_sensors=n_selected_sensors,
-        # )
-        
-        # new_record.save()
+            print("")
 
 
-
-
-
-
-
-
-        self.stdout.write(self.style.SUCCESS('*** Battle finished! ***')) 
+        self.stdout.write(self.style.SUCCESS('*** data got! ***')) 
