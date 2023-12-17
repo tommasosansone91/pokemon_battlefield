@@ -46,16 +46,16 @@ class Command(BaseCommand):
 
         # pokemon_identifier_input_1 = 'charmeleon'
         # pokemon_identifier_input_1 = 'metapod'
-        pokemon_identifier_input_1 = 'ditto'
+        # pokemon_identifier_input_1 = 'ditto'
         # pokemon_identifier_input_2 = 'ditto'
         # pokemon_identifier_input_2 = 'steelix'
-        pokemon_identifier_input_2 = 'ditto'
+        # pokemon_identifier_input_2 = 'ditto'
 
-        last_selectable_pokemon_index = 152
+        last_selectable_pokemon_index = 352
 
         # pseudorandom extraction from “discrete uniform” distribution
-        # pokemon_identifier_input_1 = str(np.random.randint(1, last_selectable_pokemon_index))
-        # pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
+        pokemon_identifier_input_1 = str(np.random.randint(1, last_selectable_pokemon_index))
+        pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
 
         pokemon_identifier_input_1 = pokemon_identifier_input_1.lower()
         pokemon_identifier_input_2 = pokemon_identifier_input_2.lower()
@@ -431,22 +431,3 @@ class Command(BaseCommand):
 
         battle.begin()
 
-
-              
-
-
-
-
-
-
-        
-                
-
-                
-
-
-                 
-
-                
-
-        self.stdout.write(self.style.SUCCESS('*** Battle finished! ***')) 
