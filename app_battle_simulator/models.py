@@ -98,6 +98,8 @@ class move(models.Model):
 
     # Type = models.CharField(max_length=256, blank=False, null=False)
 
+    # Power_points = models.PositiveIntegerField(blank=False, null=False)
+
 
     def __str__(self):       
         return  "{} (Moveset: {})".format(self.Name, self.Moveset)  

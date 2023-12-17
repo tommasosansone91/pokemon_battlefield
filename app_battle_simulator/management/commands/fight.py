@@ -39,15 +39,15 @@ class Command(BaseCommand):
         #----------------------
 
         # pokemon_identifier_input_1 = 'charmeleon'
-        pokemon_identifier_input_1 = 'metapod'
-        pokemon_identifier_input_2 = 'ditto'
+        # pokemon_identifier_input_1 = 'metapod'
+        # pokemon_identifier_input_2 = 'ditto'
         # pokemon_identifier_input_2 = 'steelix'
 
         last_selectable_pokemon_index = 152
 
         # pseudorandom extraction from “discrete uniform” distribution
-        # pokemon_identifier_input_1 = str(np.random.randint(1, last_selectable_pokemon_index))
-        # pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
+        pokemon_identifier_input_1 = str(np.random.randint(1, last_selectable_pokemon_index))
+        pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
 
         pokemon_identifier_input_1 = pokemon_identifier_input_1.lower()
         pokemon_identifier_input_2 = pokemon_identifier_input_2.lower()
@@ -92,6 +92,8 @@ class Command(BaseCommand):
         moveset.objects.all().delete()
         move.objects.all().delete()
 
+        pokemon_model_ids = list()
+
         # get the pokemon main properties
         #---------------------------------  
 
@@ -108,6 +110,8 @@ class Command(BaseCommand):
             )
             
             new_pokemon.save()
+
+            pokemon_model_ids.append(new_pokemon.id)
 
             # get the pokemon stats
             #--------------------------------- 
@@ -233,14 +237,51 @@ class Command(BaseCommand):
 
         
 
-        # class Battle():
-        #     opponents = 
+        class Battle():
+            def __init__(self, fighter_id, defender_id):
+                self.fighter_id = fighter_id
+                self.defender_id = defender_id
 
+                fighter = dict()
+                defender = dict()
 
+                fighter['pokemon'] = pokemon.objects.get(id=self.fighter_id)
+                defender['pokemon'] = pokemon.objects.get(id=self.defender_id)
 
+                self.opponents = [ fighter, defender ]
+
+                fighter['moveset'] = moveset.objects.get(Pokemon=self.fighter_id)
+                defender['moveset'] = moveset.objects.get(Pokemon=self.defender_id)
+
+                fighter['moves_list'] = move.objects.all().filter(Moveset=fighter['moveset'].id) # list
+                defender['moves_list'] = move.objects.all().filter(Moveset=defender['moveset'].id) # list
+
+        # opponents: list of dicts
+        # opponent['<model_name>'].object_attribute
+
+        battle = Battle(*pokemon_model_ids)
 
         self.stdout.write(self.style.WARNING('*** Pokèmon battle! ***')) 
-        # self.stdout.write('Here are the opponents:') 
+        self.stdout.write('Here are the opponents:') 
+
+        for opponent in battle.opponents:
+            self.stdout.write("******************************") 
+            self.stdout.write("")           
+            self.stdout.write("Name: {}".format(opponent['pokemon'].Name))
+            self.stdout.write("Pokèdex id:{}".format(opponent['pokemon'].Pokedex_id))
+            self.stdout.write("Picture: {}".format(opponent['pokemon'].front_sprite_url))
+            self.stdout.write("opponent id: {}".format(opponent['pokemon'].id))
+            self.stdout.write("")
+            self.stdout.write("\tMoveset:")
+            self.stdout.write("\t-----------------")
+
+            for opponent_move in opponent['moves_list']:
+                self.stdout.write("\t- {}\tPower: {}".format(opponent_move.Name, opponent_move.Power))
+
+            self.stdout.write("")
+              
+
+
 
 
 
