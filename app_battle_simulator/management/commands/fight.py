@@ -39,8 +39,11 @@ class Command(BaseCommand):
         # pokemon_identifier_input_1 = 'charmeleon'
         # pokemon_identifier_input_2 = 'steelix'
 
-        pokemon_identifier_input_1 = str(np.random.randint(1, 151))
-        pokemon_identifier_input_2 = str(np.random.randint(1, 151))
+        last_selectable_pokemon_index = 152
+
+        # pseudorandom extraction from “discrete uniform” distribution
+        pokemon_identifier_input_1 = str(np.random.randint(1, last_selectable_pokemon_index))
+        pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
 
         pokemon_identifier_input_1 = pokemon_identifier_input_1.lower()
         pokemon_identifier_input_2 = pokemon_identifier_input_2.lower()
@@ -82,8 +85,8 @@ class Command(BaseCommand):
         pokemon.objects.all().delete()
         battle_stats_set.objects.all().delete()
         stats_set.objects.all().delete()
-        # moveset.objects.all().delete()
-        # move.objects.all().delete()
+        moveset.objects.all().delete()
+        move.objects.all().delete()
 
         # get the pokemon main properties
         #---------------------------------  
@@ -132,6 +135,9 @@ class Command(BaseCommand):
             new_stats_set.save()
 
 
+            # get the pokemon BATTLE stats
+            #---------------------------------
+
             new_battle_stats_set = battle_stats_set(
 
                 Pokemon = pokemon.objects.get(id=new_pokemon.id),
@@ -146,27 +152,117 @@ class Command(BaseCommand):
             new_battle_stats_set.save()
 
 
+            # get the pokemon moveset
+            #-----------------------
 
-        # get the pokemon stats
-        #-----------------------
+            new_moveset = moveset(
 
-        # new_record = target_area_realtime_data(
-        #                                         Target_area_name=target_area_input_data.objects.get(Name=place_name),
-        #                                         Last_update_time=record_time,
+                Pokemon = pokemon.objects.get(id=new_pokemon.id),
 
-        #                                         PM10_mean=PM10_mean,
-        #                                         PM25_mean=PM25_mean,
+            )
+            
+            new_moveset.save()
 
-        #                                         PM10_quality=PM10_quality, 
-        #                                         PM25_quality=PM25_quality,
 
-        #                                         PM10_cathegory=PM10_cathegory,
-        #                                         PM25_cathegory=PM25_cathegory,
+            # get the pokemon moves
+            #-----------------------
 
-        #                                         n_selected_sensors=n_selected_sensors,
-        # )
+            # I need only 4 moves per pokemon
+
+            max_moves_available = 4
+
+            lenght_available_moves = len(pokemon_data['moves'])
+
+            print("lenght_available_moves", lenght_available_moves)
+            
+            i = 0
+            moves_indexes = []
+            while len(moves_indexes) < max_moves_available:
+                move_index = np.random.randint(0, lenght_available_moves)
+                if move_index not in moves_indexes:
+                    moves_indexes.append(move_index)
+                
+                # let's suppose you get a pokemon like ditto or magikarp
+                if i > max_moves_available:
+                    break
+
+                i = i+1
+
+            print("moves_indexes", moves_indexes)
+
+
+            # move_info_dict = dict()
+
+            for move_index in moves_indexes:
+                # move_info_dict['name'] = pokemon_data['moves'][move_index]['move']['name']
+                # move_info_dict['url'] = pokemon_data['moves'][move_index]['move']['url']
+
+                move_url = pokemon_data['moves'][move_index]['move']['url']
         
-        # new_record.save()
+            
+                try:
+                    # go grab the api
+                    # move_api_request = requests.get(move_info_dict['url'])
+                    move_api_request = requests.get(move_url)
+
+                    # load as json il contenuto di api_request in 
+                    move_api_data = json.loads(move_api_request.content)
+
+
+                except:
+                    print("Cannot retrieve the pokèmon moves information. Check that the identifier number in input are correct\n\n{}\n.".format(
+                            move_url))
+                    sys.exit(1)      
+
+
+                move_description = move_api_data.get('effect_entries', "no_description")[0].get('effect', "no_description")
+                move_power = move_api_data.get('power', 0)
+
+                if not isinstance(move_api_data, int):
+                    move_power = 0
+
+                new_move = move(
+
+                    Moveset = moveset.objects.get(id=new_moveset.id),
+
+                    Name = move_api_data['name'],
+                    Description = move_description,
+                    Power = move_power
+
+                )
+                
+                new_move.save()
+
+                print(move_api_data['name'])
+                print(move_url)
+                print(move_description)
+                print(move_power)
+
+                
+
+                
+
+
+                 
+
+                
+
+            # for stat in pokemon_data['stats']:
+            #     stats_dict[stat['stat']['name']] = stat['base_stat']
+
+
+            # new_stats_set = stats_set(
+
+            #     Pokemon = pokemon.objects.get(id=new_pokemon.id),
+
+            #     HP = stats_dict['hp'],
+            #     ATK = stats_dict['attack'],
+            #     DEF = stats_dict['defense'],
+            #     SPD = stats_dict['speed']
+
+            # )
+            
+            # new_stats_set.save()
 
 
 

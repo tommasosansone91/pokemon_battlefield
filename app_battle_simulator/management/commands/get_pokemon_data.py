@@ -97,15 +97,87 @@ class Command(BaseCommand):
             #     for stat in pokemon_data['stats']
             # ]
 
-            stats_dict = dict()
-            for stat in pokemon_data['stats']:
-                stats_dict[stat['stat']['name']] = stat['base_stat']
+            # stats_dict = dict()
+            # for stat in pokemon_data['stats']:
+            #     stats_dict[stat['stat']['name']] = stat['base_stat']
 
-            # print(stats_list)
-            print(stats_dict)
-            stats_dict
-                
+            # # print(stats_list)
+            # print(stats_dict)
+            # stats_dict
+
+
+            # print(len(pokemon_data['moves']))
+            # print(pokemon_data['moves'])
+
+
+           # get the pokemon moves
+            #-----------------------
+
+            # I need only 4 moves per pokemon
+
+            max_moves_available = 4
+
+            lenght_available_moves = len(pokemon_data['moves'])
+
+            print("lenght_available_moves", lenght_available_moves)
             
+            i = 0
+            moves_indexes = []
+            while len(moves_indexes) < max_moves_available:
+                move_index = np.random.randint(0, lenght_available_moves)
+                if move_index not in moves_indexes:
+                    moves_indexes.append(move_index)
+                
+                # let's suppose you get a pokemon like ditto or magikarp
+                if i > max_moves_available:
+                    break
+
+                i = i+1
+
+            print("moves_indexes", moves_indexes)
+
+
+            # move_info_dict = dict()
+
+            for move_index in moves_indexes:
+                # move_info_dict['name'] = pokemon_data['moves'][move_index]['move']['name']
+                # move_info_dict['url'] = pokemon_data['moves'][move_index]['move']['url']
+
+                move_url = pokemon_data['moves'][move_index]['move']['url']
+        
+            
+                try:
+                    # go grab the api
+                    # move_api_request = requests.get(move_info_dict['url'])
+                    move_api_request = requests.get(move_url)
+
+                    # load as json il contenuto di api_request in 
+                    move_api_data = json.loads(move_api_request.content)
+
+
+                except:
+                    print("Cannot retrieve the pokèmon moves information. Check that the identifier number in input are correct\n\n{}\n.".format(
+                            move_url))
+                    sys.exit(1)      
+
+                name = move_api_data['name']
+                move_description = move_api_data.get('effect_entries', "no_description")[0].get('effect', "no_description")
+                
+                move_power = move_api_data['power']
+
+                print(name)
+                print(move_url)
+                print(move_description)                
+                print(move_power)
+                print(type(move_power))
+
+                if not isinstance(move_api_data, int):
+                    move_power = 0
+
+            
+
+
+            print(move_power)
 
 
 

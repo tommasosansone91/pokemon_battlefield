@@ -92,7 +92,7 @@ class move(models.Model):
 
     Description = models.CharField(max_length=256, blank=False, null=False)
 
-    Damage = models.PositiveIntegerField(blank=False, null=False)
+    Power = models.PositiveIntegerField(blank=False, null=False)
 
     # Accuracy = models.PositiveIntegerField(blank=False, null=False)
 
