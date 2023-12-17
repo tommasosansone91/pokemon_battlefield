@@ -46,14 +46,16 @@ class Command(BaseCommand):
 
         # pokemon_identifier_input_1 = 'charmeleon'
         # pokemon_identifier_input_1 = 'metapod'
+        pokemon_identifier_input_1 = 'ditto'
         # pokemon_identifier_input_2 = 'ditto'
         # pokemon_identifier_input_2 = 'steelix'
+        pokemon_identifier_input_2 = 'ditto'
 
         last_selectable_pokemon_index = 152
 
         # pseudorandom extraction from “discrete uniform” distribution
-        pokemon_identifier_input_1 = str(np.random.randint(1, last_selectable_pokemon_index))
-        pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
+        # pokemon_identifier_input_1 = str(np.random.randint(1, last_selectable_pokemon_index))
+        # pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
 
         pokemon_identifier_input_1 = pokemon_identifier_input_1.lower()
         pokemon_identifier_input_2 = pokemon_identifier_input_2.lower()
@@ -282,6 +284,8 @@ class Command(BaseCommand):
                 self.winner = None
                 self.loser = None
 
+                self.threshold_turn = 20
+
 
             def showdown(self):
                 self.stdout.write(self.style.WARNING('************** Pokèmon battle showdown! **************')) 
@@ -292,7 +296,7 @@ class Command(BaseCommand):
                 self.stdout.write("") 
                 time.sleep(1)
 
-                for opponent in battle.opponents:
+                for opponent in self.opponents:
                     self.stdout.write("******************************") 
 
                     self.stdout.write("")          
@@ -338,7 +342,7 @@ class Command(BaseCommand):
                 self.stdout.write("")
                 self.stdout.write(self.style.SUCCESS('************** Battle Ends! **************')) 
                 self.stdout.write("")
-                battle.show_status()
+                self.show_status()
                 self.stdout.write("")
                 self.stdout.write("The winner is {} !!!".format(self.winner['pokemon']))
                 time.sleep(1)
@@ -347,9 +351,10 @@ class Command(BaseCommand):
                 self.stdout.write("")
                 self.stdout.write(self.style.NOTICE('************** Battle Ends! **************')) 
                 self.stdout.write("")
-                battle.show_status()
+                self.show_status()
                 self.stdout.write("")
-                self.stdout.write("This is a draw...\n{} turns have passed but nobody has won.".format(self.turn_count))
+                self.stdout.write("This is a draw.\n{} turns have passed but nobody has won.".format(self.turn_count))
+                self.stdout.write("")
                 time.sleep(1)
 
             def begin(self):
@@ -365,42 +370,42 @@ class Command(BaseCommand):
 
                     self.turn_count = self.turn_count + 1
 
-                    battle.show_status()
+                    self.show_status()
 
-                    self.stdout.write("It's {} turn.".format(battle.opponents[0]['pokemon'].Name))
+                    self.stdout.write("It's {} turn.".format(self.opponents[0]['pokemon'].Name))
 
                 
-                    selected_move = random.choice(battle.opponents[0]['moves_list'])
+                    selected_move = random.choice(self.opponents[0]['moves_list'])
 
-                    self.stdout.write("{} uses {}.".format(battle.opponents[0]['pokemon'].Name, selected_move.Name))
+                    self.stdout.write("{} uses {}.".format(self.opponents[0]['pokemon'].Name, selected_move.Name))
 
                     # do the damage to the enemy
                     adjustment_factor = 0.25
-                    caculated_damage = round( ( battle.opponents[0]['battle_stats_set'].ATK / battle.opponents[1]['battle_stats_set'].DEF ) * selected_move.Power * adjustment_factor )
+                    caculated_damage = round( ( self.opponents[0]['battle_stats_set'].ATK / self.opponents[1]['battle_stats_set'].DEF ) * selected_move.Power * adjustment_factor )
 
-                    # enemy_s_HPs = battle.opponents[1]['battle_stats_set'].HP
-                    battle.opponents[1]['battle_stats_set'].HP = max(0, battle.opponents[1]['battle_stats_set'].HP - caculated_damage) # HPs cannot go below 0
-                    battle.opponents[1]['battle_stats_set'].save()
+                    # enemy_s_HPs = self.opponents[1]['battle_stats_set'].HP
+                    self.opponents[1]['battle_stats_set'].HP = max(0, self.opponents[1]['battle_stats_set'].HP - caculated_damage) # HPs cannot go below 0
+                    self.opponents[1]['battle_stats_set'].save()
 
-                    self.stdout.write("{} loses {} HPs !".format(battle.opponents[1]['pokemon'], caculated_damage))
+                    self.stdout.write("{} loses {} HPs !".format(self.opponents[1]['pokemon'], caculated_damage))
 
 
                     # battle termination conditions
                     #--------------------------------
 
-                    if battle.opponents[1]['battle_stats_set'].HP == 0:
-                        self.winner = battle.opponents[0]
-                        self.loser = battle.opponents[1]
-                        battle.ends_win()
+                    if self.opponents[1]['battle_stats_set'].HP == 0:
+                        self.winner = self.opponents[0]
+                        self.loser = self.opponents[1]
+                        self.ends_win()
                         
                         break
 
-                    elif self.turn_count > 40 and battle.opponents[1]['battle_stats_set'].HP != 0:
-                        battle.ends_win()
+                    elif self.turn_count == self.threshold_turn and self.opponents[1]['battle_stats_set'].HP != 0:
+                        self.ends_draw()
                         
                         break
                     
-                    battle.opponents.reverse()
+                    self.opponents.reverse()
 
 
 
