@@ -14,8 +14,8 @@ class pokemon(models.Model):
     Name = models.CharField(max_length=256, blank=False, null=False)
     Pokedex_id = models.PositiveIntegerField(blank=False, null=False)
 
-    front_sprite_url = models.URLField(max_length=256, blank=False, null=False)
-    back_sprite_url = models.URLField(max_length=256, blank=False, null=False)
+    Front_sprite_url = models.URLField(max_length=256, blank=False, null=False)
+    Back_sprite_url = models.URLField(max_length=256, blank=False, null=False)
 
 
     def __str__(self):       
