@@ -19,7 +19,8 @@ class pokemon(models.Model):
 
 
     def __str__(self):       
-        return  "[{}] N°{} - {}".format(self.id, self.Pokedex_id, self.Name) 
+        # return  "[{}] N°{} - {}".format(self.id, self.Pokedex_id, self.Name) 
+        return  "[{}] {}".format(self.id, self.Name)
 
     class Meta:
         ordering = ['id']
