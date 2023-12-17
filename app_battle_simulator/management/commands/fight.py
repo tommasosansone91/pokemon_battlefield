@@ -24,16 +24,22 @@ from app_battle_simulator.models import pokemon
 from app_battle_simulator.models import moveset, battle_stats_set, stats_set
 from app_battle_simulator.models import move
 
+import time
+
 
 # declare functions
 #######################
 class RetrieveDataError(Exception):
     pass
 
+class ParseDataError(Exception):
+    pass
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
-        self.stdout.write(self.style.WARNING('*** Starting simulator ***')) 
+        self.stdout.write(self.style.WARNING('************** Starting simulator **************')) 
+        self.stdout.write("")
 
         # get the pokemon data
         #----------------------
@@ -217,7 +223,12 @@ class Command(BaseCommand):
 
 
                 # get the move attributes
-                move_description = move_api_data.get('effect_entries', "no_description")[0].get('effect', "no_description")
+                try:
+                    move_description = move_api_data.get('effect_entries', "no_description")[0].get('effect', "no_description")
+                except:
+                    print("Cannot get elements in effect_entries.\n\n{}".format(move_api_data.get('effect_entries', "no_description")))
+                    move_description = "no_description"
+                
                 move_power = move_api_data.get('power', 0)
                 # turn to zero where power is none
                 if not isinstance(move_power, int):
@@ -267,20 +278,23 @@ class Command(BaseCommand):
                 self.defender['battle_stats_set'] = battle_stats_set.objects.get(Pokemon=self.defender_id)  
 
             def showdown(self):
-                self.stdout.write(self.style.WARNING('*** Pokèmon battle showdown! ***')) 
+                self.stdout.write(self.style.WARNING('************** Pokèmon battle showdown! **************')) 
+                time.sleep(1)
                 self.stdout.write("") 
                 self.stdout.write('The battle is about to begin!')
                 self.stdout.write('Here are the opponents:') 
+                self.stdout.write("") 
+                time.sleep(1)
 
                 for opponent in battle.opponents:
                     self.stdout.write("******************************") 
 
                     self.stdout.write("")          
 
-                    self.stdout.write("Name: {}".format(opponent['pokemon'].Name))
-                    self.stdout.write("Pokèdex id:{}".format(opponent['pokemon'].Pokedex_id))
-                    self.stdout.write("Picture: {}".format(opponent['pokemon'].front_sprite_url))
-                    self.stdout.write("opponent id: {}".format(opponent['pokemon'].id))
+                    self.stdout.write("Name:\t{}".format(opponent['pokemon'].Name))
+                    self.stdout.write("Pokèdex id:\t{}".format(opponent['pokemon'].Pokedex_id))
+                    self.stdout.write("Picture:\t{}".format(opponent['pokemon'].front_sprite_url))
+                    self.stdout.write("player id:\t{}".format(opponent['pokemon'].id))
 
                     self.stdout.write("")
 
@@ -301,17 +315,22 @@ class Command(BaseCommand):
                     self.stdout.write("\t- SPD:\t{}".format(opponent['stats_set'].SPD))
 
                     self.stdout.write("")
+
+                    time.sleep(1)
             
             def show_status(self):
                 self.stdout.write("")
-                self.stdout.write("************** battle status ****************") 
+                self.stdout.write("- - - - - - - battle status - - - - - - -") 
                 for opponent in self.opponents:
                     self.stdout.write("Name: {}\tHP: ".format(opponent['pokemon'], self.opponent['stats_set'].HP) )
-                self.stdout.write("*********************************************")
+                self.stdout.write("- - - - - - - - - - - - - - - - - - - - - ")
+                time.sleep(1)
 
             def begin(self):
-                self.stdout.write("\n")
-                self.stdout.write(self.style.WARNING('*** Battle begin! ***')) 
+                self.stdout.write("")
+                self.stdout.write(self.style.NOTICE('************** Battle begin! **************')) 
+                self.stdout.write("")
+                time.sleep(1)
                 for opponent in self.opponents:
                     pass
 
@@ -322,7 +341,7 @@ class Command(BaseCommand):
 
         battle.showdown()
 
-        # battle.begin()
+        battle.begin()
 
 
               
