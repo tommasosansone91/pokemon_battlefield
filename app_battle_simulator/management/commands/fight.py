@@ -238,67 +238,93 @@ class Command(BaseCommand):
         
 
         class Battle():
-            def __init__(self, fighter_id, defender_id):
+            def __init__(self, handle_stdout_attr, handle_style_attr, fighter_id, defender_id):
+
+                self.stdout = handle_stdout_attr
+                self.style = handle_style_attr
+
                 self.fighter_id = fighter_id
                 self.defender_id = defender_id
 
-                fighter = dict()
-                defender = dict()
+                self.fighter = dict()
+                self.defender = dict()
 
-                fighter['pokemon'] = pokemon.objects.get(id=self.fighter_id)
-                defender['pokemon'] = pokemon.objects.get(id=self.defender_id)
+                self.fighter['pokemon'] = pokemon.objects.get(id=self.fighter_id)
+                self.defender['pokemon'] = pokemon.objects.get(id=self.defender_id)
 
-                self.opponents = [ fighter, defender ]
+                self.opponents = [ self.fighter, self.defender ]
 
-                fighter['moveset'] = moveset.objects.get(Pokemon=self.fighter_id)
-                defender['moveset'] = moveset.objects.get(Pokemon=self.defender_id)
+                self.fighter['moveset'] = moveset.objects.get(Pokemon=self.fighter_id)
+                self.defender['moveset'] = moveset.objects.get(Pokemon=self.defender_id)
 
-                fighter['moves_list'] = move.objects.all().filter(Moveset=fighter['moveset'].id) # list
-                defender['moves_list'] = move.objects.all().filter(Moveset=defender['moveset'].id) # list
+                self.fighter['moves_list'] = move.objects.all().filter(Moveset=self.fighter['moveset'].id) # list
+                self.defender['moves_list'] = move.objects.all().filter(Moveset=self.defender['moveset'].id) # list
 
-                fighter['stats_set'] = stats_set.objects.get(Pokemon=self.fighter_id)
-                defender['stats_set'] = stats_set.objects.get(Pokemon=self.defender_id)                
+                self.fighter['stats_set'] = stats_set.objects.get(Pokemon=self.fighter_id)
+                self.defender['stats_set'] = stats_set.objects.get(Pokemon=self.defender_id)                
 
-                fighter['battle_stats_set'] = battle_stats_set.objects.get(Pokemon=self.fighter_id)
-                defender['battle_stats_set'] = battle_stats_set.objects.get(Pokemon=self.defender_id)  
+                self.fighter['battle_stats_set'] = battle_stats_set.objects.get(Pokemon=self.fighter_id)
+                self.defender['battle_stats_set'] = battle_stats_set.objects.get(Pokemon=self.defender_id)  
+
+            def showdown(self):
+                self.stdout.write(self.style.WARNING('*** Pokèmon battle showdown! ***')) 
+                self.stdout.write("") 
+                self.stdout.write('The battle is about to begin!')
+                self.stdout.write('Here are the opponents:') 
+
+                for opponent in battle.opponents:
+                    self.stdout.write("******************************") 
+
+                    self.stdout.write("")          
+
+                    self.stdout.write("Name: {}".format(opponent['pokemon'].Name))
+                    self.stdout.write("Pokèdex id:{}".format(opponent['pokemon'].Pokedex_id))
+                    self.stdout.write("Picture: {}".format(opponent['pokemon'].front_sprite_url))
+                    self.stdout.write("opponent id: {}".format(opponent['pokemon'].id))
+
+                    self.stdout.write("")
+
+                    self.stdout.write("\tMoveset:")
+                    self.stdout.write("\t-----------------")
+
+                    for opponent_move in opponent['moves_list']:
+                        self.stdout.write("\t- {}\n\t\tPower: {}".format(opponent_move.Name, opponent_move.Power))
+
+                    self.stdout.write("")
+
+                    self.stdout.write("\tStats:")
+                    self.stdout.write("\t-----------------")
+
+                    self.stdout.write("\t- HP:\t{}".format(opponent['stats_set'].HP))
+                    self.stdout.write("\t- ATK:\t{}".format(opponent['stats_set'].ATK))
+                    self.stdout.write("\t- DEF:\t{}".format(opponent['stats_set'].DEF))
+                    self.stdout.write("\t- SPD:\t{}".format(opponent['stats_set'].SPD))
+
+                    self.stdout.write("")
+            
+            def show_status(self):
+                self.stdout.write("")
+                self.stdout.write("************** battle status ****************") 
+                for opponent in self.opponents:
+                    self.stdout.write("Name: {}\tHP: ".format(opponent['pokemon'], self.opponent['stats_set'].HP) )
+                self.stdout.write("*********************************************")
+
+            def begin(self):
+                self.stdout.write("\n")
+                self.stdout.write(self.style.WARNING('*** Battle begin! ***')) 
+                for opponent in self.opponents:
+                    pass
 
         # opponents: list of dicts
         # opponent['<model_name>'].object_attribute
 
-        battle = Battle(*pokemon_model_ids)
+        battle = Battle(self.stdout, self.style, *pokemon_model_ids)
 
-        self.stdout.write(self.style.WARNING('*** Pokèmon battle! ***')) 
-        self.stdout.write('Here are the opponents:') 
+        battle.showdown()
 
-        for opponent in battle.opponents:
-            self.stdout.write("******************************") 
+        # battle.begin()
 
-            self.stdout.write("")          
 
-            self.stdout.write("Name: {}".format(opponent['pokemon'].Name))
-            self.stdout.write("Pokèdex id:{}".format(opponent['pokemon'].Pokedex_id))
-            self.stdout.write("Picture: {}".format(opponent['pokemon'].front_sprite_url))
-            self.stdout.write("opponent id: {}".format(opponent['pokemon'].id))
-
-            self.stdout.write("")
-
-            self.stdout.write("\tMoveset:")
-            self.stdout.write("\t-----------------")
-
-            for opponent_move in opponent['moves_list']:
-                self.stdout.write("\t- {}\n\t\tPower: {}".format(opponent_move.Name, opponent_move.Power))
-
-            self.stdout.write("")
-
-            self.stdout.write("\tStats:")
-            self.stdout.write("\t-----------------")
-
-            self.stdout.write("\t- HP:\t{}".format(opponent['stats_set'].HP))
-            self.stdout.write("\t- ATK:\t{}".format(opponent['stats_set'].ATK))
-            self.stdout.write("\t- DEF:\t{}".format(opponent['stats_set'].DEF))
-            self.stdout.write("\t- SPD:\t{}".format(opponent['stats_set'].SPD))
-
-            self.stdout.write("")
               
 
 
@@ -306,7 +332,7 @@ class Command(BaseCommand):
 
 
 
-        self.stdout.write(self.style.WARNING('*** Battle begin! ***')) 
+        
                 
 
                 
