@@ -172,15 +172,15 @@ class Command(BaseCommand):
             max_moves_available = 4
 
             lenght_available_moves = len(pokemon_data['moves'])
-
-            print("lenght_available_moves", lenght_available_moves)
             
             i = 0
             moves_indexes = []
+            available_moves_indexes = list(range(lenght_available_moves))
+
             while len(moves_indexes) < max_moves_available:
-                move_index = np.random.randint(0, lenght_available_moves)
-                if move_index not in moves_indexes:
-                    moves_indexes.append(move_index)
+                move_index = random.choice(available_moves_indexes)
+                moves_indexes.append(move_index)
+                available_moves_indexes.remove(move_index)
                 
                 # let's suppose you get a pokemon like ditto or magikarp
                 if i > max_moves_available:
@@ -188,14 +188,8 @@ class Command(BaseCommand):
 
                 i = i+1
 
-            print("moves_indexes", moves_indexes)
-
-
-            # move_info_dict = dict()
 
             for move_index in moves_indexes:
-                # move_info_dict['name'] = pokemon_data['moves'][move_index]['move']['name']
-                # move_info_dict['url'] = pokemon_data['moves'][move_index]['move']['url']
 
                 move_url = pokemon_data['moves'][move_index]['move']['url']
         
@@ -215,10 +209,11 @@ class Command(BaseCommand):
                     sys.exit(1)      
 
 
+                # get the move attributes
                 move_description = move_api_data.get('effect_entries', "no_description")[0].get('effect', "no_description")
                 move_power = move_api_data.get('power', 0)
-
-                if not isinstance(move_api_data, int):
+                # turn to zero where power is none
+                if not isinstance(move_power, int):
                     move_power = 0
 
                 new_move = move(
@@ -233,10 +228,7 @@ class Command(BaseCommand):
                 
                 new_move.save()
 
-                print(move_api_data['name'])
-                print(move_url)
-                print(move_description)
-                print(move_power)
+
 
                 
 

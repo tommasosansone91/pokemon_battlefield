@@ -122,11 +122,14 @@ class Command(BaseCommand):
             print("lenght_available_moves", lenght_available_moves)
             
             i = 0
+
             moves_indexes = []
+            available_moves_indexes = list(range(lenght_available_moves))
+
             while len(moves_indexes) < max_moves_available:
-                move_index = np.random.randint(0, lenght_available_moves)
-                if move_index not in moves_indexes:
-                    moves_indexes.append(move_index)
+                move_index = random.choice(available_moves_indexes)
+                moves_indexes.append(move_index)
+                available_moves_indexes.remove(move_index)
                 
                 # let's suppose you get a pokemon like ditto or magikarp
                 if i > max_moves_available:
