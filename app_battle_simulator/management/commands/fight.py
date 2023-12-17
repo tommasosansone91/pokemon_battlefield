@@ -33,17 +33,21 @@ class RetrieveDataError(Exception):
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
+        self.stdout.write(self.style.WARNING('*** Starting simulator ***')) 
+
         # get the pokemon data
         #----------------------
 
         # pokemon_identifier_input_1 = 'charmeleon'
+        pokemon_identifier_input_1 = 'metapod'
+        pokemon_identifier_input_2 = 'ditto'
         # pokemon_identifier_input_2 = 'steelix'
 
         last_selectable_pokemon_index = 152
 
         # pseudorandom extraction from “discrete uniform” distribution
-        pokemon_identifier_input_1 = str(np.random.randint(1, last_selectable_pokemon_index))
-        pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
+        # pokemon_identifier_input_1 = str(np.random.randint(1, last_selectable_pokemon_index))
+        # pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
 
         pokemon_identifier_input_1 = pokemon_identifier_input_1.lower()
         pokemon_identifier_input_2 = pokemon_identifier_input_2.lower()
@@ -170,14 +174,13 @@ class Command(BaseCommand):
             # I need only 4 moves per pokemon
 
             max_moves_available = 4
-
             lenght_available_moves = len(pokemon_data['moves'])
             
             i = 0
             moves_indexes = []
             available_moves_indexes = list(range(lenght_available_moves))
 
-            while len(moves_indexes) < max_moves_available:
+            while len(moves_indexes) < max_moves_available and len(available_moves_indexes) > 0:
                 move_index = random.choice(available_moves_indexes)
                 moves_indexes.append(move_index)
                 available_moves_indexes.remove(move_index)
@@ -228,8 +231,21 @@ class Command(BaseCommand):
                 
                 new_move.save()
 
+        
+
+        # class Battle():
+        #     opponents = 
 
 
+
+
+        self.stdout.write(self.style.WARNING('*** Pokèmon battle! ***')) 
+        # self.stdout.write('Here are the opponents:') 
+
+
+
+
+        self.stdout.write(self.style.WARNING('*** Battle begin! ***')) 
                 
 
                 
@@ -238,29 +254,5 @@ class Command(BaseCommand):
                  
 
                 
-
-            # for stat in pokemon_data['stats']:
-            #     stats_dict[stat['stat']['name']] = stat['base_stat']
-
-
-            # new_stats_set = stats_set(
-
-            #     Pokemon = pokemon.objects.get(id=new_pokemon.id),
-
-            #     HP = stats_dict['hp'],
-            #     ATK = stats_dict['attack'],
-            #     DEF = stats_dict['defense'],
-            #     SPD = stats_dict['speed']
-
-            # )
-            
-            # new_stats_set.save()
-
-
-
-
-
-
-
 
         self.stdout.write(self.style.SUCCESS('*** Battle finished! ***')) 
