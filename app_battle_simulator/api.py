@@ -30,7 +30,7 @@ class ParseDataError(Exception):
     
 # path('api/launch_battle/<int:pkmn_id2>/<int:pkmn_id1>', api.launch_battle, name="launch_battle"),
 def launch_battle(request, pkmn_id1, pkmn_id2):
-
+    print("")
     print('************** Starting simulator **************') 
     print("")
 
@@ -51,7 +51,10 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
     # pokemon_identifier_input_2 = str(np.random.randint(1, last_selectable_pokemon_index))
 
     pokemon_identifier_input_1 = str(pkmn_id1)
-    pokemon_identifier_input_2 = str(pkmn_id1)
+    pokemon_identifier_input_2 = str(pkmn_id2)
+
+    print("Got an external request with parameters {}, {}:".format(pokemon_identifier_input_1, pokemon_identifier_input_2))
+    print("api/launch_battle/{}/{}".format(pokemon_identifier_input_1, pokemon_identifier_input_2))
 
     pokemon_identifier_input_1 = pokemon_identifier_input_1.lower()
     pokemon_identifier_input_2 = pokemon_identifier_input_2.lower()
@@ -63,6 +66,11 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
     pokemon_1_id_api_URL = os.path.join(POKEMON_ID_ROOT_URL, pokemon_identifier_input_1)
     pokemon_2_id_api_URL = os.path.join(POKEMON_ID_ROOT_URL, pokemon_identifier_input_2)
 
+    print("Asking the data to http://pokeapi.com/ ")
+    print(pokemon_1_id_api_URL)
+    print(pokemon_2_id_api_URL)
+    print("Please wait... ")
+
         
     try:
         # go grab the api
@@ -73,7 +81,6 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
         pokemon_1_api_data = json.loads(pokemon_1_api_request.content)
         pokemon_2_api_data = json.loads(pokemon_2_api_request.content)
 
-
     except:
     # except Exception as e:
         # raise RetrieveDataError(
@@ -83,6 +90,7 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
         sys.exit(1)
 
 
+    print("Data correctly received!")
     # print('\n\n', pokemon_1_api_data,'\n\n', pokemon_2_api_data)
 
     pokemon_data_list = [ pokemon_1_api_data , pokemon_2_api_data ]
@@ -237,10 +245,7 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
 
 
     class Battle():
-        def __init__(self, handle_stdout_attr, handle_style_attr, fighter_id, defender_id):
-
-            self.stdout = handle_stdout_attr
-            self.style = handle_style_attr
+        def __init__(self, fighter_id, defender_id):
 
             self.fighter_id = fighter_id
             self.defender_id = defender_id
@@ -395,8 +400,10 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
                 
                 self.opponents.reverse()
 
+    print("pokemon_model_ids", pokemon_model_ids)
 
-    battle = Battle(*pokemon_model_ids)
+    # battle = Battle(*pokemon_model_ids)
+    battle = Battle(pokemon_model_ids[0], pokemon_model_ids[1])
 
     battle.showdown()
 
