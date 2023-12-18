@@ -1,4 +1,4 @@
-launch the script by running in the terminal this folder (rott folder of the project, where README is)
+launch the script by running in the terminal this folder (root folder of the project, where README is)
 
 virtualenv venv
 
