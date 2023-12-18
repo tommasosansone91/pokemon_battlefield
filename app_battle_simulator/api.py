@@ -66,7 +66,7 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
     pokemon_1_id_api_URL = os.path.join(POKEMON_ID_ROOT_URL, pokemon_identifier_input_1)
     pokemon_2_id_api_URL = os.path.join(POKEMON_ID_ROOT_URL, pokemon_identifier_input_2)
 
-    print("Asking the data to http://pokeapi.com/ ")
+    print("Asking the pokèmon data to http://pokeapi.com/ ")
     print(pokemon_1_id_api_URL)
     print(pokemon_2_id_api_URL)
     print("Please wait... ")
@@ -203,6 +203,10 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
 
             move_url = pokemon_data['moves'][move_index]['move']['url']
 
+            print("Asking the move data to http://pokeapi.com/ ")
+            print(move_url)
+            print("Please wait... ")
+
         
             try:
                 # go grab the api
@@ -219,12 +223,20 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
 
 
             # get the move attributes
+            #--------------------------
+
+            # name
+            move_name = move_api_data['name']    
+
+            # description
             try:
                 move_description = move_api_data.get('effect_entries', "no_description")[0].get('effect', "no_description")
             except:
-                print("Cannot get elements in effect_entries.\n\n{}".format(move_api_data.get('effect_entries', "no_description")))
-                move_description = "no_description"
+                print("Cannot find any element in effect_entries:\n{}\nAssigning value NO_DESCRIPTION to the move {}".format(move_api_data.get('effect_entries', "no_description"), move_name))
+                
+                move_description = "NO_DESCRIPTION"
             
+            # power
             move_power = move_api_data.get('power', 0)
             # turn to zero where power is none
             if not isinstance(move_power, int):
@@ -279,13 +291,14 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
 
 
         def showdown(self):
+            print("")
             print('************** Pokèmon battle showdown! **************') 
-            # time.sleep(1)
+            time.sleep(1)
             print("") 
             print('The battle is about to begin!')
             print('Here are the opponents:') 
             print("") 
-            # time.sleep(1)
+            time.sleep(1)
 
             for opponent in self.opponents:
                 print("******************************") 
@@ -318,7 +331,7 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
 
                 print("")
 
-                # time.sleep(3)
+                time.sleep(3)
         
         def show_status(self):
             print("")
@@ -329,32 +342,35 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
                 pass
             print("- - - - - - - - - - - - - - - - - - - - - ")
             print("")
-            # time.sleep(1)
+            time.sleep(1)
 
         def ends_win(self):
             print("")
             print('************** Battle Ends! **************') 
             print("")
+            time.sleep(1)
             self.show_status()
             print("")
             print("The winner is {} !!!".format(self.winner['pokemon']))
-            # time.sleep(1)
+            print("")
+            
 
         def ends_draw(self):
             print("")
             print('************** Battle Ends! **************') 
             print("")
+            time.sleep(1)
             self.show_status()
             print("")
             print("This is a draw.\n{} turns have passed but nobody has won.".format(self.turn_count))
             print("")
-            # time.sleep(1)
+            time.sleep(1)
 
         def begin(self):
             print("")
-            print('************** Battle begin! **************') 
+            print('************** Battle begins! **************') 
             print("")
-            # time.sleep(1)
+            time.sleep(1)
 
             self.turn_count = 0
 
@@ -400,7 +416,7 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
                 
                 self.opponents.reverse()
 
-    print("pokemon_model_ids", pokemon_model_ids)
+
 
     # battle = Battle(*pokemon_model_ids)
     battle = Battle(pokemon_model_ids[0], pokemon_model_ids[1])
@@ -409,6 +425,6 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
 
     battle.begin()
 
-    response = JsonResponse(battle)
+    response = JsonResponse({})
 
     return response
