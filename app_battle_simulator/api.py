@@ -349,7 +349,9 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
             print('************** Battle Ends! **************') 
             print("")
             time.sleep(1)
-            self.show_status()
+            self.show_status()            
+            print("")
+            print("{} is no more able to fight !".format(self.loser['pokemon']))
             print("")
             print("The winner is {} !!!".format(self.winner['pokemon']))
             print("")
@@ -360,11 +362,11 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
             print('************** Battle Ends! **************') 
             print("")
             time.sleep(1)
-            self.show_status()
+            self.show_status()            
             print("")
             print("This is a draw.\n{} turns have passed but nobody has won.".format(self.turn_count))
             print("")
-            time.sleep(1)
+            
 
         def begin(self):
             print("")
