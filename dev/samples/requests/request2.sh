@@ -1,1 +1,1 @@
-curl http://localhost:8000/api/launch_battle/150/25/
+curl http://localhost:8000/api/launch_battle/137/140/
