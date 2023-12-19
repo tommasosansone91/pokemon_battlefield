@@ -1,3 +1,5 @@
-documentation/dev_documentation
-
 app_battle_simulator/migrations
+
+pokemon_battlefield/__pycache__
+app_battle_simulator/management/commands/__pycache__
+app_battle_simulator/__pycache__
