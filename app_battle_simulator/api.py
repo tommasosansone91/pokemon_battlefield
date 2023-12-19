@@ -103,10 +103,11 @@ def launch_battle(request, pkmn_id1, pkmn_id2):
     moveset.objects.all().delete()
     move.objects.all().delete()
 
-    pokemon_model_ids = list()
 
     # get the pokemon main properties
     #---------------------------------  
+
+    pokemon_model_ids = list()
 
     for pokemon_data in pokemon_data_list:        
 
